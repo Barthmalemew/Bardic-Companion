@@ -30,7 +30,7 @@ Source files can be found in the following directory:
 
 ### Source Files:
 - `App.css`
-- `App.tsx`
+- `index.tsx`
 - `index.css`
 - `main.tsx`
 - `vite-env.d.ts`

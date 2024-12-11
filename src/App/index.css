@@ -1,0 +1,14 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  gap: 30%;
+  text-align: center;
+  padding: 5%;
+}
+
+h1{
+  border: red 1px solid;
+}
