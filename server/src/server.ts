@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import {success} from "concurrently/dist/src/defaults";
 
 dotenv.config();
 
@@ -11,6 +12,13 @@ const PORT = process.env.PORT || 3000;
 // Enable CORS for development
 app.use(cors());
 app.use(express.json());
+
+// API Routes
+app.post('/api/scene', (req: Request, res: Response) => {
+  const { scene } = req.body;
+  console.log('Received scene:', scene);
+  res.json({ success: true });
+});
 
 // Serve static files from the React application
 app.use(express.static(path.join(__dirname, '../../dist')));
