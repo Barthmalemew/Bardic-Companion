@@ -1,12 +1,14 @@
 .app-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
   height: 100%;
   width: 100%;
-  gap: 30%;
+  gap: 0;
   text-align: center;
-  padding: 5%;
+  padding: 1rem;
+  justify-content: space-between;
+  overflow-y: auto;
 }
 
 h1{

@@ -1,3 +1,11 @@
 .media-player-container {
-    border: red solid 1px;
+    border: blue solid 1px;
+    align-self: center;
+    width: 80%;
+    max-width: 800px;
+    height: 400px;
+    margin: 2rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

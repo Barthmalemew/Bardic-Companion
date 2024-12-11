@@ -7,7 +7,7 @@ import MediaPlayer from "./MediaPlayer";
 function App() {
     return (
         <div className="app-container">
-            <h1>Bardic Companion</h1>
+            <h1 className="title">Bardic Companion</h1>
             <MediaPlayer/>
             <PromptInput/>
         </div>
