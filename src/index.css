@@ -1,9 +1,11 @@
+/* Reset default styles and ensure consistent box-sizing */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Set up full viewport layout and prevent scrolling */
 html, body, #root {
   height: 100%;
   width: 100%;

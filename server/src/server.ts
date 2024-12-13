@@ -2,22 +2,51 @@ import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import {success} from "concurrently/dist/src/defaults";
+import fetch from 'node-fetch'; // Import fetch for making HTTP requests
 
+// Load environment variables
 dotenv.config();
 
+// Initialize Express application
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Enable CORS for development
+// Scene Analysis Service URL
+const SCENE_ANALYZER_URL = process.env.SCENE_ANALYZER_URL || 'http://localhost:8000';
+const MUSIC_GENERATOR_URL = process.env.MUSIC_GENERATOR_URL || 'http://localhost:8001';
+
+// Middleware configuration
 app.use(cors());
 app.use(express.json());
 
-// API Routes
-app.post('/api/scene', (req: Request, res: Response) => {
+/**
+ * API Routes
+ */
+app.post('/api/scene', async (req: Request, res: Response) => {
   const { scene } = req.body;
-  console.log('Received scene:', scene);
-  res.json({ success: true });
+  
+  try {
+    // Send scene to analyzer
+    const analysisResponse = await fetch(`${SCENE_ANALYZER_URL}/analyze`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: scene })
+    });
+    
+    const analysis = await analysisResponse.json();
+    
+    // Generate music based on analysis
+    const musicResponse = await fetch(`${MUSIC_GENERATOR_URL}/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(analysis)
+    });
+    
+    res.json(await musicResponse.json());
+  } catch (error) {
+    console.error('Error processing scene:', error);
+    res.status(500).json({ error: 'Failed to process scene' });
+  }
 });
 
 // Serve static files from the React application

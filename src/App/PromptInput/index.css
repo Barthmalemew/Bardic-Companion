@@ -1,3 +1,4 @@
+/* Container styling for the text input area */
 .text-container {
     display: flex;
     align-self: center;
@@ -8,6 +9,7 @@
     border: red 1px solid;
 }
 
+/* Textarea styling with dark theme */
 textarea {
     width: 100%;
     min-height: 100px;
