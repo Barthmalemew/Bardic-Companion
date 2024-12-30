@@ -1,12 +1,35 @@
 /* Container styling for the media player component */
 .media-player-container {
-    border: blue solid 1px;
     align-self: center;
     width: 80%;
     max-width: 800px;
     height: 400px;
-    margin: 2rem 0;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #2a2a2a;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.player-content {
+    text-align: center;
+}
+
+.player-content audio {
+    margin-top: 15px;
+    width: 100%;
+}
+
+.error-message {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid #ff0000;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.error-details {
+    font-size: 0.9em;
+    color: #ff9999;
 }

@@ -1,0 +1,11 @@
+fastapi==0.104.1
+uvicorn==0.24.0
+pydantic==2.5.2
+numpy==1.26.2
+pydub==0.25.1
+python-multipart==0.0.6
+python-sonic==0.3.0
+mingus==0.6.1
+sounddevice==0.4.6
+scipy==1.11.4
+music21==9.1.0

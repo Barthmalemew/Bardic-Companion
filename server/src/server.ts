@@ -1,9 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
+import winston from 'winston';
+import debug from 'debug';
 import cors from 'cors';
-import fetch from 'node-fetch'; // Import fetch for making HTTP requests
-
 // Load environment variables
 dotenv.config();
 
@@ -11,13 +11,38 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Scene Analysis Service URL
-const SCENE_ANALYZER_URL = process.env.SCENE_ANALYZER_URL || 'http://localhost:8000';
-const MUSIC_GENERATOR_URL = process.env.MUSIC_GENERATOR_URL || 'http://localhost:8001';
+// Music Service URL
+const MUSIC_SERVICE_URL = process.env.MUSIC_SERVICE_URL || 'http://localhost:8000';
+
+// Enhanced logging setup
+const logger = winston.createLogger({
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+    winston.format.prettyPrint()
+  ),
+  transports: [
+    new winston.transports.Console({
+      format: winston.format.simple()
+    }),
+    new winston.transports.File({ 
+      filename: 'logs/error.log', 
+      level: 'error' 
+    })
+  ]
+});
 
 // Middleware configuration
 app.use(cors());
 app.use(express.json());
+
+// Configure headers middleware
+app.use((req, res, next) => {
+  res.header('Content-Type', 'application/json');
+  next();
+});
+
+const log = debug('bardic:server');
 
 /**
  * API Routes
@@ -25,24 +50,42 @@ app.use(express.json());
 app.post('/api/scene', async (req: Request, res: Response) => {
   const { scene } = req.body;
   
+  // Validate scene input
+  if (!scene || typeof scene !== 'string') {
+    logger.error('Invalid scene input received');
+    return res.status(400).json({ 
+      error: 'Invalid input', 
+      details: 'Scene text is required and must be a string' 
+    });
+  }
+  logger.info(`Processing scene request: ${scene.substring(0, 100)}...`);
+
+  // Add content type validation header
+  const headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  };
+
+  log(`Received scene request: ${scene}`);
   try {
-    // Send scene to analyzer
-    const analysisResponse = await fetch(`${SCENE_ANALYZER_URL}/analyze`, {
+    // Send scene to music service
+    log(`Sending request to music service at ${MUSIC_SERVICE_URL}`);
+    const response = await fetch(`${MUSIC_SERVICE_URL}/process`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ text: scene })
     });
-    
-    const analysis = await analysisResponse.json();
-    
-    // Generate music based on analysis
-    const musicResponse = await fetch(`${MUSIC_GENERATOR_URL}/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(analysis)
-    });
-    
-    res.json(await musicResponse.json());
+
+    if (!response.ok) {
+      throw new Error(`Music service responded with status: ${response.status}`);
+    }
+
+    // Log response headers for debugging
+    log(`Response headers: ${JSON.stringify([...response.headers])}`);
+
+    const data = await response.json();
+    log(`Received response from music service: ${JSON.stringify(data)}`);
+    res.json(data);
   } catch (error) {
     console.error('Error processing scene:', error);
     res.status(500).json({ error: 'Failed to process scene' });

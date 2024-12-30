@@ -1,18 +1,24 @@
 import './index.css'
-import './PromptInput/index.tsx'
 import PromptInput from "./PromptInput";
-import './MediaPlayer/index.tsx'
 import MediaPlayer from "./MediaPlayer";
+import { useState } from 'react';
 
-/**
- * Main App component - Orchestrates the application layout and components
- */
+interface AudioData {
+    audioUrl: string | null;
+    duration: number;
+}
+
 function App() {
+    const [audioData, setAudioData] = useState<AudioData>({
+        audioUrl: null,
+        duration: 0
+    });
+
     return (
         <div className="app-container">
             <h1 className="title">Bardic Companion</h1>
-            <MediaPlayer/>
-            <PromptInput/>
+            <MediaPlayer audioData={audioData} />
+            <PromptInput onAudioGenerated={setAudioData} />
         </div>
     )
 }
